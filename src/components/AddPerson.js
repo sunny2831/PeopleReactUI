@@ -6,9 +6,9 @@ class AddPerson extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            place: "",
-            email: ""
+            name: '',
+            place: '',
+            email: ''
         }
     }
 

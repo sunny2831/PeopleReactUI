@@ -14,30 +14,59 @@ class People extends Component {
         this.fetchPeople();
     }
 
-    onDelClick = (id) => {    
+    onDelClick = (id) => {
+        const jwtToken = sessionStorage.getItem("jwt");    
         if (window.confirm('Are you sure to delete person?')) {    
             fetch('http://localhost:8080/people/' + id, {    
                 method: 'DELETE',    
                 headers: new Headers({    
-                    "Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ"    
-      })    
+                    "Authorization": jwtToken
+                })    
             }).then(res => this.fetchPeople())    
                 .catch(err => console.error(err));    
         }    
     }; 
 
     updatePerson(person) {    
+        const jwtToken = sessionStorage.getItem("jwt");
         fetch('http://localhost:8080/people', {    
             method: 'PUT',    
             headers: {    
-                "Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ",    
-                "Content-Type": "application/json"    
-      },    
-            body: JSON.stringify(person)    
+                "Authorization": jwtToken,
+                "Content-Type": "application/json"     
+        },    
+            body: JSON.stringify(person)
         })    
             .then(res => this.fetchPeople())    
             .catch(err => console.log(err))    
     }
+
+    addPerson(person) {
+        const jwtToken = sessionStorage.getItem("jwt");    
+        fetch('http://localhost:8080/people', {    
+            method: 'POST',    
+            headers: {    
+            "Authorization": jwtToken,
+            'Accept': 'application/json',
+            "Content_Type": 'application/json'
+        },    
+            body: {person}    
+        })    
+            .then(res => this.fetchPeople())    
+            .catch(err => console.log(err))    
+    }
+
+    editable = (cell) => {
+        return (
+            <div style={{backgroundColor: "#fafafa"}} contentEditable suppressContentEditableWarning onBlur={e => {
+                const contact = [...this.state.people];
+                contact[cell.index][cell.column.id] = e.target.innerHTML;
+                this.setState({people: contact});
+            }}
+                 dangerouslySetInnerHTML={{__html: this.state.people[cell.index][cell.column.id]}}
+            />
+        );
+    };
 
     render() {
 
@@ -83,7 +112,13 @@ class People extends Component {
     }
 
     fetchPeople = () => {
-        fetch('http://localhost:8080/people', {headers: {"Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ"} })
+        const jwtToken = sessionStorage.getItem("jwt");  
+        fetch('http://localhost:8080/people', {
+            headers: {
+                "Authorization": jwtToken,
+                "Content-Type": "application/json"
+            } 
+        })
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({
