@@ -1,4 +1,8 @@
 import React, {Component} from 'react';
+import ReactTable from "react-table";
+import 'react-table/react-table.css';
+import AddPerson from './AddPerson';  
+
 
 class People extends Component {
     constructor(props) {
@@ -18,18 +22,44 @@ class People extends Component {
     }
 
     render() {
-        const tableRows = this.state.people.map((person, index) =>
-            <tr key={index}>
-                <td>{person.name}</td>
-                <td>{person.place}</td>
-                <td>{person.email}</td>
-            </tr>
-        );
+
+        const columns = [{
+            Header: 'Person',
+            accessor: 'name',
+            Cell: this.editable
+        }, {
+            Header: 'Place',
+            accessor: 'place',
+            Cell: this.editable
+        }, {
+            Header: 'Email',
+            accessor: 'email',
+            Cell: this.editable
+        }, {    
+            sortable: false,    
+            filterable: false,    
+            width: 100,    
+            Cell: row => (    
+                <div>    
+                    <button onClick={() => this.onDelClick(row.original.id)}>Delete</button>    
+                </div>    
+            )    
+        }, {    
+            sortable: false,    
+            filterable: false,    
+            width: 100,    
+            Cell: row => (    
+                <div>    
+                    <button onClick={() => this.updatePerson(row.original)}>Edit</button>    
+                </div>    
+            )    
+        }
+            ,];
+    
         return (
-            <div className="App">
-                <table>
-                    <tbody>{tableRows}</tbody>
-                </table>
+            <div>
+                 <AddPerson addPerson={this.addPerson}  fetchPeople={this.fetchPeople}/>
+                <ReactTable data={this.state.people} columns={columns} filterable={true}/>
             </div>
         );
     }
