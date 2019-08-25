@@ -11,14 +11,32 @@ class People extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:8080/people', {headers: {"Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ"} })
-            .then((response) => response.json())
-            .then((responseData) => {
-                this.setState({
-                    people: responseData
-                })
-            })
-            .catch(err => console.error(err))
+        this.fetchPeople();
+    }
+
+    onDelClick = (id) => {    
+        if (window.confirm('Are you sure to delete person?')) {    
+            fetch('http://localhost:8080/people/' + id, {    
+                method: 'DELETE',    
+                headers: new Headers({    
+                    "Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ"    
+      })    
+            }).then(res => this.fetchPeople())    
+                .catch(err => console.error(err));    
+        }    
+    }; 
+
+    updatePerson(person) {    
+        fetch('http://localhost:8080/people', {    
+            method: 'PUT',    
+            headers: {    
+                "Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ",    
+                "Content-Type": "application/json"    
+      },    
+            body: JSON.stringify(person)    
+        })    
+            .then(res => this.fetchPeople())    
+            .catch(err => console.log(err))    
     }
 
     render() {
@@ -50,7 +68,7 @@ class People extends Component {
             width: 100,    
             Cell: row => (    
                 <div>    
-                    <button onClick={() => this.updatePerson(row.original)}>Edit</button>    
+                    <button onClick={() => this.updatePerson(row.original)}>Save</button>    
                 </div>    
             )    
         }
@@ -63,6 +81,18 @@ class People extends Component {
             </div>
         );
     }
+
+    fetchPeople = () => {
+        fetch('http://localhost:8080/people', {headers: {"Authorization": "BEARER eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2Njc0NjgwOX0.L7sDZnICU07BwtqnzeVoX8fLC_jxowCmA5y-Jdj5J6aTMlffFHt9xRqDI_C_itYrbpL6I7p1dpfLsNnAkjupfQ"} })
+        .then((response) => response.json())
+        .then((responseData) => {
+            this.setState({
+                people: responseData
+            })
+        })
+        .catch(err => console.error(err))
+    }
+
 }
 
 export default People;  
