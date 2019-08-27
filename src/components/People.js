@@ -20,41 +20,43 @@ class People extends Component {
             fetch('http://localhost:8080/people/' + id, {    
                 method: 'DELETE',    
                 headers: new Headers({    
-                    "Authorization": jwtToken
+                    "Authorization": jwtToken,
+                    "Content-Type": "application/json"
                 })    
             }).then(res => this.fetchPeople())    
                 .catch(err => console.error(err));    
         }    
     }; 
+    
+    addPerson(person) {
+        const jwtToken = sessionStorage.getItem("jwt"); 
+        fetch('http://localhost:8080/people/', {
+            method: 'POST',    
+            body: JSON.stringify(person),           
+            headers: {    
+                "Authorization": jwtToken,
+                "Accept": "application/json",
+                "Content_Type": 'application/json'
+            },    
+        })    
+            .then(res => this.fetchPeople())    
+            .catch(err => console.log(err))    
+    }
 
-    updatePerson(person) {    
+    updatePerson(person) { 
         const jwtToken = sessionStorage.getItem("jwt");
         fetch('http://localhost:8080/people', {    
             method: 'PUT',    
             headers: {    
                 "Authorization": jwtToken,
                 "Content-Type": "application/json"     
-        },    
+            },    
             body: JSON.stringify(person)
         })    
-            .then(res => this.fetchPeople())    
+            .then(res => this.fetchPeople)    
             .catch(err => console.log(err))    
     }
 
-    addPerson(person) {
-        const jwtToken = sessionStorage.getItem("jwt");    
-        fetch('http://localhost:8080/people', {    
-            method: 'POST',    
-            headers: {    
-            "Authorization": jwtToken,
-            'Accept': 'application/json',
-            "Content_Type": 'application/json'
-        },    
-            body: {person}    
-        })    
-            .then(res => this.fetchPeople())    
-            .catch(err => console.log(err))    
-    }
 
     editable = (cell) => {
         return (
@@ -105,7 +107,7 @@ class People extends Component {
     
         return (
             <div>
-                 <AddPerson addPerson={this.addPerson}  fetchPeople={this.fetchPeople}/>
+                 <AddPerson addPerson={this.addPerson}  fetchPeople={this.fetchPeople} allPeople={this.state.people}/>
                 <ReactTable data={this.state.people} columns={columns} filterable={true}/>
             </div>
         );
@@ -116,6 +118,7 @@ class People extends Component {
         fetch('http://localhost:8080/people', {
             headers: {
                 "Authorization": jwtToken,
+                'Accept': 'application/json',
                 "Content-Type": "application/json"
             } 
         })

@@ -8,19 +8,21 @@ class AddPerson extends Component {
         this.state = {
             name: '',
             place: '',
-            email: ''
+            email: '',
         }
     }
 
     handleChange = (event) => {    
         this.setState(    
             {[event.target.name]: event.target.value}    
-        );    
+        )
     };    
     
     handleSubmit = (event) => {    
         event.preventDefault();    
-        var person = {name: this.state.name, place: this.state.place, email: this.state.email};    
+        var person = {name: this.state.name,  place: this.state.place, email: this.state.email}; 
+        // var jsonp = JSON.stringify(person)
+        console.log(person)
         this.props.addPerson(person);    
         this.refs.addDialog.hide();    
     } 

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-// import People from "./components/People";
 import Login from './components/Login'
 
 
